@@ -1,5 +1,9 @@
-import { discordClient } from "../api/discordClient.js"
 
-export const InitBot = () => {
-    console.log(discordClient);
+import { initEvents } from "../events/events.js";
+import { initUsers } from "./initUsers.js";
+
+export const InitBot = async () => {
+    initEvents();
+    await initUsers();
+
 }

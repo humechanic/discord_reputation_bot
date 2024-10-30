@@ -1,0 +1,23 @@
+{
+  "name": "lounge-zone-bot",
+  "version": "0.0.1",
+  "type": "module",
+  "description": "various tool united",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "watch": "nodemon index.js"
+  },
+  "author": "Ivan Golt",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^14.16.2",
+    "dotenv": "^16.4.5",
+    "nodemon": "^3.1.4"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.10"
+  }
+}

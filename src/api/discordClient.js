@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits } from 'discord.js';
+import { Client, GatewayIntentBits, IntentsBitField, Partials } from 'discord.js';
 
 export const discordClient = new Client({
     intents: [
@@ -14,5 +14,10 @@ export const discordClient = new Client({
         GatewayIntentBits.GuildMessageTyping,
         GatewayIntentBits.MessageContent,
         GatewayIntentBits.GuildMessagePolls,
+    ],
+    partials: [
+        Partials.Message,
+        Partials.Channel,
+        Partials.Reaction
     ]
 });

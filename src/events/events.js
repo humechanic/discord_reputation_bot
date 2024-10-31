@@ -1,7 +1,9 @@
 import { Events } from 'discord.js';
 import { discordClient } from '../api/discordClient.js';
+import { reactionEvents } from './reactions/index.js';
 
 export const initEvents = () => {
+
 
     discordClient.on(Events.ClientReady, () => {
         console.log(`Logged in as ${discordClient.user.tag}!`);
@@ -21,4 +23,5 @@ export const initEvents = () => {
             message.channel.send('Pong!');
         }
     });
+    reactionEvents();
 }

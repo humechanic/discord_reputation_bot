@@ -3,7 +3,7 @@ import { discordClient } from "../../api/discordClient.js";
 import { getRoles } from "../../api/users/index.js";
 import { playSound } from "./adminRoleSound.js";
 
-const userAudioPlayers = new Map(); // Хранит активные плееры для пользователей
+const userAudioPlayers = new Map(); // map of active players
 
 export const onJoinUsersEvents = async () => {
 
@@ -15,15 +15,15 @@ export const onJoinUsersEvents = async () => {
         const member = newState.member;
 
         if (member.roles.cache.has(targetRoleId)) {
-            // Если пользователь переместился из одного канала в другой
+            // on switch channels
             if (oldState.channelId && newState.channelId && oldState.channelId !== newState.channelId) {
                 handleUserChannelSwitch(oldState, newState);
             }
-            // Если пользователь покинул канал
+            // on leave channel
             else if (oldState.channelId && !newState.channelId) {
                 stopAudioForUser(userId);
             }
-            // Если пользователь впервые зашел в канал
+            // on first entry
             else if (!oldState.channelId && newState.channelId) {
                 playAudioForUser(newState);
             }
@@ -34,25 +34,25 @@ export const onJoinUsersEvents = async () => {
 
 function handleUserChannelSwitch(oldState, newState) {
     const userId = newState.member.user.id;
-    stopAudioForUser(userId); // Останавливаем аудио в старом канале
-    playAudioForUser(newState); // Проигрываем аудио в новом канале
+    stopAudioForUser(userId); // stop old playing
+    playAudioForUser(newState); // start playing in new channel
 }
 
 function playAudioForUser(newState) {
-    playSound(newState, userAudioPlayers)
+    playSound(newState, userAudioPlayers);
 }
 
 
 function stopAudioForUser(userId) {
     const audioData = userAudioPlayers.get(userId);
     if (audioData) {
-        audioData.player.stop(); // Останавливаем текущий плеер
+        audioData.player.stop();
 
-        // Проверяем состояние подключения перед уничтожением
+
         if (audioData.connection && audioData.connection.state.status !== 'destroyed') {
-            audioData.connection.destroy(); // Отключаемся от канала, если еще не уничтожено
+            audioData.connection.destroy();
         }
 
-        userAudioPlayers.delete(userId); // Удаляем запись для пользователя
+        userAudioPlayers.delete(userId);
     }
 }

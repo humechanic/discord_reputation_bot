@@ -1,5 +1,5 @@
 import { AudioPlayerStatus, createAudioPlayer, createAudioResource, joinVoiceChannel } from "@discordjs/voice";
-import { soundFilePath } from "./constants/index.js";
+import { adminFilePath } from "./constants/index.js";
 import fs from 'fs';
 import prism from 'prism-media';
 
@@ -16,13 +16,13 @@ export async function playSound(newState, userAudioPlayers) {
         const player = createAudioPlayer();
 
         const resource = createAudioResource(
-            fs.createReadStream(soundFilePath)
+            fs.createReadStream(adminFilePath)
                 .pipe(new prism.FFmpeg({
                     args: [
-                        '-i', 'pipe:0',      // Чтение из потока
-                        '-f', 'opus',        // Формат Opus
-                        '-ar', '48000',      // Частота дискретизации
-                        '-ac', '2',          // Два канала
+                        '-i', 'pipe:0',      // Read from stream
+                        '-f', 'opus',        // Format Opus
+                        '-ar', '48000',      // Hz
+                        '-ac', '2',          // Stereo
                     ],
                     executablePath: ffmpegPath
                 }))
@@ -33,7 +33,7 @@ export async function playSound(newState, userAudioPlayers) {
         connection.subscribe(player);
 
         player.on('error', (error) => {
-            console.error('Ошибка воспроизведения:', error);
+            console.error('Playing faield:', error);
             if (connection && connection.state.status !== 'destroyed') {
                 connection.destroy();
             }

@@ -1,17 +1,21 @@
 
 import { REST, Routes } from 'discord.js';
-import { InitBot } from '../init/index.js';
-import { discordClient } from './discordClient.js';
+import { InitBot } from './init/index.js';
+import { discordClient } from '../api/discordClient.js';
 
 const commands = [
     {
         name: 'ping',
         description: 'Replies with Pong!',
     },
+    {
+        name: 'scan',
+        description: 'Scan server for create a snapshot of current user database',
+    },
 
 ];
 
-export const init = async () => {
+export const initApp = async () => {
     try {
         const rest = new REST({ version: '10' }).setToken(process.env.BOT_TOKEN);
         console.log('Started refreshing application (/) commands.');

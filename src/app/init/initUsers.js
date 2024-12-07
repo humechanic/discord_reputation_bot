@@ -1,4 +1,4 @@
-import { discordClient } from "../api/discordClient.js";
+import { discordClient } from "../../api/discordClient.js";
 
 export const initUsers = async () => {
     const { guilds } = discordClient;

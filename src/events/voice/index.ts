@@ -1,20 +1,21 @@
 import { Events } from "discord.js";
-import { discordClient } from "../../api/discordClient.js";
-import { getRoles } from "../../api/users/index.js";
-import { playSound } from "./adminRoleSound.js";
+import { discordClient } from "../../api/discordClient";
+import { getRoles } from "../../api/users/index";
+import { playSound } from "./adminRoleSound";
+
 
 const userAudioPlayers = new Map(); // map of active players
 
 export const onJoinUsersEvents = async () => {
 
     const roles = await getRoles();
-    const { id: targetRoleId } = roles.find(r => r.name === 'admin')
+    const { id: targetRoleId = '' } = roles.find(r => r.name === 'admin') || {}
 
     discordClient.on(Events.VoiceStateUpdate, async (oldState, newState) => {
-        const userId = newState.member.user.id;
+        const userId = newState.member?.user.id;
         const member = newState.member;
 
-        if (member.roles.cache.has(targetRoleId)) {
+        if (member?.roles.cache.has(targetRoleId)) {
             // on switch channels
             if (oldState.channelId && newState.channelId && oldState.channelId !== newState.channelId) {
                 handleUserChannelSwitch(oldState, newState);

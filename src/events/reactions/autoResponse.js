@@ -1,4 +1,4 @@
-import { discordClient } from "../../api/discordClient.js";
+import { discordClient } from "@api/discordClient.js";
 import { EMOJI_MESSAGES_MAP } from "./constants/messages.js";
 
 export const autoResponse = async (reaction, emoji) => {

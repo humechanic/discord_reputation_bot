@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits, IntentsBitField, Partials } from 'discord.js';
+import { Client, GatewayIntentBits, Partials } from 'discord.js';
 
 export const discordClient = new Client({
     intents: [

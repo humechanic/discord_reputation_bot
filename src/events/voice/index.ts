@@ -1,7 +1,7 @@
 import { Events } from "discord.js";
-import { discordClient } from "../../api/discordClient";
-import { getRoles } from "../../api/users/index";
-import { playSound } from "./adminRoleSound";
+import { discordClient } from "../../api/discordClient.js";
+import { getRoles } from "../../api/users/index.js";
+import { playSound } from "./adminRoleSound.js";
 
 
 const userAudioPlayers = new Map(); // map of active players

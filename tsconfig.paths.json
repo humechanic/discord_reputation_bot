@@ -1,0 +1,26 @@
+{
+    "extends": "./tsconfig.json",
+    "baseUrl": "./src",
+    "compilerOptions": {
+        "paths": {
+            "@api/*": [
+                "./src/api/*"
+            ],
+            "@app/*": [
+                "./src/app/*"
+            ],
+            "@assets/*": [
+                "./src/assets/*"
+            ],
+            "@events/*": [
+                "./src/events/*"
+            ],
+            "@shared/*": [
+                "./src/shared/*"
+            ],
+            "@utils/*": [
+                "./src/utils/*"
+            ],
+        }
+    }
+}

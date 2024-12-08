@@ -8,6 +8,6 @@
         "db/**"
     ],
     "ext": "js,json,ts",
-    "exec": "tsx src/index.js",
+    "exec": "tsx -r tsconfig-paths/register src/index.js",
     "delay": "200ms"
 }

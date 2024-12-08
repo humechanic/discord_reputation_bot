@@ -3,7 +3,7 @@ import { EMOJI_MESSAGES_MAP } from "./constants/messages.js";
 
 export const autoResponse = async (reaction, emoji) => {
     if (EMOJI_MESSAGES_MAP.has(emoji)) {
-        discordClient
+
         const fetchedMessage = await reaction.message.fetch();
 
         const existingMessages = await fetchedMessage.channel.messages.fetch({ limit: 100 });

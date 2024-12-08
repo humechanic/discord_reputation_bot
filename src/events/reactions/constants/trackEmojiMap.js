@@ -17,7 +17,9 @@ export const TRACKED_EMOJI = {
     },
     REGULAR: {
         BEERS: '🍻',
-        CANDLE: '🕯️'
+        CANDLE: '🕯️',
+        ARROW_DOUBLE_UP: '⏫',
+        ARROW_DOUBLE_DOWN: '⏬',
     },
     CUSTOM: {
         ALCOHOLIC: 'alkashbuldiga',

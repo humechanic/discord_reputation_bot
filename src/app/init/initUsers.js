@@ -7,5 +7,4 @@ export const initUsers = async () => {
     const channels = await guild.channels.fetch();
     const roles = await guild.roles.fetch();
     return members
-
 }

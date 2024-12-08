@@ -1,5 +1,5 @@
 
-import { DiscordAPIError, Events } from 'discord.js';
+import { DiscordAPIError, DiscordErrorData, Events } from 'discord.js';
 import { discordClient } from '../../api/discordClient.js';
 
 
@@ -8,9 +8,9 @@ export const scanCommand = () => {
 
         if (!interaction.isChatInputCommand()) return;
 
-        if (interaction.commandName === 'scan') {
+        if (interaction.commandName === 'me') {
             const { guilds } = discordClient;
-            const guild = await guilds.fetch(process.env.GUILD_ID);
+            const guild = await guilds.fetch(process.env.GUILD_ID as string);
             const members = await guild.members.fetch();
 
             const userNames = Array.from(members.entries()).map(([userId, userData]) => {
@@ -19,8 +19,8 @@ export const scanCommand = () => {
             try {
                 await interaction.reply(JSON.stringify(userNames));
             } catch (e) {
-                if (e) {
-                    console.log((e.rawError).errors)
+                if (e instanceof DiscordAPIError) {
+                    console.log((e.rawError as DiscordErrorData).errors)
                     await interaction.reply('Opss')
                 } else {
                     console.log(e)

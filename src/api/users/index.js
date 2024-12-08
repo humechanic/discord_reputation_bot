@@ -12,6 +12,12 @@ export const getUsers = async () => {
     return members
 }
 
+export const getUser = async (userId) => {
+    const guild = await getGuild();
+    const user = guild.members.fetch(userId);
+    return user
+}
+
 export const getRoles = async () => {
     const guild = await getGuild();
     const roles = await guild.roles.fetch();

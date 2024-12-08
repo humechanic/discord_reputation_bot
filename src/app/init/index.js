@@ -21,13 +21,13 @@ export const InitBot = async () => {
     function ensureFileExists() {
 
         if (!fs.existsSync(dbDir)) {
-            console.log('No directory found, creating...');
+            console.info('No directory found, creating...');
             fs.mkdirSync(dbDir);
         }
 
 
         if (!fs.existsSync(usersFile)) {
-            console.log('File not found, creating...');
+            console.info('File not found, creating...');
             fs.writeFileSync(usersFile, JSON.stringify({}, null, 2));
         }
     }
@@ -56,6 +56,4 @@ export const InitBot = async () => {
 
     ensureFileExists();
     mergeDataWithFile(newUsers);
-
-    console.log(process.cwd())
 }

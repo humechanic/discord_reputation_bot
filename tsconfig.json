@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
-        "target": "ES6",
-        "module": "CommonJS",
+        "target": "ES2020",
+        "module": "ESNext",
         "outDir": "./build",
         "rootDir": ".",
         "baseUrl": "./src",
@@ -14,23 +14,32 @@
         "moduleResolution": "node",
         "paths": {
             "@api/*": [
-                "./src/api/*"
+                "api/*"
             ],
             "@app/*": [
-                "./src/app/*"
+                "app/*"
             ],
             "@assets/*": [
-                "./src/assets/*"
+                "assets/*"
             ],
             "@events/*": [
-                "./src/events/*"
+                "events/*"
             ],
             "@shared/*": [
-                "./src/shared/*"
+                "shared/*"
             ],
             "@utils/*": [
-                "./src/utils/*"
+                "utils/*"
             ],
         }
-    }
+    },
+    "include": [
+        "src/**/*",
+        "src/*",
+    ],
+    "exclude": [
+        "node_modules",
+        "build",
+        "db",
+    ]
 }

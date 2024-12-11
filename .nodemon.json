@@ -3,9 +3,9 @@
         "src"
     ],
     "ignore": [
-        "node_modules/**",
-        "build/**",
-        "db/**"
+        "node_modules",
+        "build",
+        "db"
     ],
     "ext": "js,json,ts",
     "exec": "tsx -r tsconfig-paths/register src/index.js",

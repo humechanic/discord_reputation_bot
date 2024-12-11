@@ -1,8 +1,8 @@
 import fs from 'fs';
-import { TRACKED_EMOJI } from "@events/reactions/constants/trackEmojiMap";
-import { getDBFile } from "@shared/utils/paths";
-import { getUsersDB } from '@shared/utils/dbAccess';
 
+import { getUsersDB } from '@shared/utils/dbAccess.js';
+import { getDBFile } from '@shared/utils/paths.js';
+import { TRACKED_EMOJI } from '@events/reactions/constants/trackEmojiMap.js';
 
 const usersFile = getDBFile();
 

@@ -1,4 +1,5 @@
-import { initEvents } from "../../events/events.js"; import { initUserDb } from "./initUserDb.js";
+import { initEvents } from "../../events/events.js";
+import { initUserDb } from "./initUserDb.js";
 
 export const InitBot = async () => {
     initEvents();

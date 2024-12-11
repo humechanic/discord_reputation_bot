@@ -4,7 +4,7 @@
         "module": "ESNext",
         "outDir": "./build",
         "rootDir": ".",
-        "baseUrl": "./src",
+        "baseUrl": ".",
         "esModuleInterop": true,
         "resolveJsonModule": true,
         "strict": true,
@@ -12,30 +12,33 @@
         "noImplicitAny": false,
         "skipLibCheck": true,
         "moduleResolution": "node",
+        /*Lint*/
+        "noUnusedLocals": true,
+        // "noUnusedParameters": true,
         "paths": {
             "@api/*": [
-                "api/*"
+                "src/api/*"
             ],
             "@app/*": [
-                "app/*"
+                "src/app/*"
             ],
             "@assets/*": [
-                "assets/*"
+                "src/assets/*"
             ],
             "@events/*": [
-                "events/*"
+                "src/events/*"
             ],
             "@shared/*": [
-                "shared/*"
+                "src/shared/*"
             ],
             "@utils/*": [
-                "utils/*"
+                "src/utils/*"
             ],
         }
     },
     "include": [
-        "src/**/*",
-        "src/*",
+        "src/**/*.ts",
+        "src/**/*.js"
     ],
     "exclude": [
         "node_modules",

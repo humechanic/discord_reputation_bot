@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { getDBFile } from "./paths"
+import { getDBFile } from './paths.js';
 
 export const getUsersDB = () => {
     const usersFile = getDBFile();

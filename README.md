@@ -1,4 +1,4 @@
-Reputation bot for discord based on NodeJs;
+Reputation bot for discord based on NodeJs+Typescript;
 Lounge zone 2024 (c)
 
 Bot scans entire server's users and creates json/postgres database;

@@ -1,24 +1,25 @@
 import { Events } from "discord.js";
 import { discordClient } from "../../api/discordClient.js";
-import { getRoles } from "../../api/users/index.js";
 import { playSound } from "./adminRoleSound.js";
+import { getAudioFileByRole } from "./utils/getAudioFileByRole.js";
 
 
 const userAudioPlayers = new Map(); // map of active players
 
 export const onJoinUsersEvents = async () => {
 
-    const roles = await getRoles();
-    const { id: targetRoleId = '' } = roles.find(r => r.name === 'admin') || {}
-
     discordClient.on(Events.VoiceStateUpdate, async (oldState, newState) => {
-        const userId = newState.member?.user.id;
-        const member = newState.member;
+        const member = newState.member
+        const userId = member?.user.id;
+        const roles = member?.roles.cache;
 
-        if (member?.roles.cache.has(targetRoleId)) {
+        const audioFileByRole = getAudioFileByRole(roles);
+
+
+        if (audioFileByRole) {
             // on switch channels
             if (oldState.channelId && newState.channelId && oldState.channelId !== newState.channelId) {
-                handleUserChannelSwitch(oldState, newState);
+                handleUserChannelSwitch(oldState, newState, audioFileByRole);
             }
             // on leave channel
             else if (oldState.channelId && !newState.channelId) {
@@ -26,21 +27,21 @@ export const onJoinUsersEvents = async () => {
             }
             // on first entry
             else if (!oldState.channelId && newState.channelId) {
-                playAudioForUser(newState);
+                playAudioForUser(newState, audioFileByRole);
             }
         }
     });
 }
 
 
-function handleUserChannelSwitch(oldState, newState) {
+function handleUserChannelSwitch(oldState, newState, audioFile) {
     const userId = newState.member.user.id;
     stopAudioForUser(userId); // stop old playing
-    playAudioForUser(newState); // start playing in new channel
+    playAudioForUser(newState, audioFile); // start playing in new channel
 }
 
-function playAudioForUser(newState) {
-    playSound(newState, userAudioPlayers);
+function playAudioForUser(newState, audioFile) {
+    playSound(newState, userAudioPlayers, audioFile);
 }
 
 

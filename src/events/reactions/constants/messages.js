@@ -20,4 +20,6 @@ export const EMOJI_MESSAGES_MAP = new Map([
     [TRACKED_EMOJI.REGULAR.CANDLE, 'Помянем...'],
     [TRACKED_EMOJI.CUSTOM.ALCOHOLIC, 'ГыЫГЫГ... ЫЫы бля алкаш штоль'],
     [TRACKED_EMOJI.CUSTOM.FEELSGOOD, 'Oo.. kak mne ohuenno бля заебись...'],
+    [TRACKED_EMOJI.REGULAR.ARROW_DOUBLE_UP, null],
+    [TRACKED_EMOJI.REGULAR.ARROW_DOUBLE_DOWN, null],
 ]);

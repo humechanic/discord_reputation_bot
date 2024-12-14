@@ -3,9 +3,10 @@ import { adminFilePath } from "./constants/index.js";
 import fs from 'fs';
 import prism from 'prism-media';
 
-const ffmpegPath = 'C:\\ffmpeg\\bin\\ffmpeg.exe';
+// const ffmpegPath = 'C:\\ffmpeg\\bin\\ffmpeg.exe';
 
-export async function playSound(newState, userAudioPlayers) {
+export async function playSound(newState, userAudioPlayers, audioFile) {
+    if (!audioFile) return;
     const userId = newState.member.user.id;
     const connection = joinVoiceChannel({
         channelId: newState.channelId,
@@ -16,7 +17,7 @@ export async function playSound(newState, userAudioPlayers) {
         const player = createAudioPlayer();
 
         const resource = createAudioResource(
-            fs.createReadStream(adminFilePath)
+            fs.createReadStream(audioFile)
                 .pipe(new prism.FFmpeg({
                     args: [
                         '-i', 'pipe:0',      // Read from stream
@@ -24,7 +25,7 @@ export async function playSound(newState, userAudioPlayers) {
                         '-ar', '48000',      // Hz
                         '-ac', '2',          // Stereo
                     ],
-                    executablePath: ffmpegPath
+                    // executablePath: ffmpegPath
                 }))
         );
 

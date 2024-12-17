@@ -1,5 +1,4 @@
 import { AudioPlayerStatus, createAudioPlayer, createAudioResource, joinVoiceChannel } from "@discordjs/voice";
-import { adminFilePath } from "./constants/index.js";
 import fs from 'fs';
 import prism from 'prism-media';
 

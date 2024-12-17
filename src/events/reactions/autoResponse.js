@@ -1,4 +1,3 @@
-import { discordClient } from "@api/discordClient.js";
 import { EMOJI_MESSAGES_MAP } from "./constants/messages.js";
 import { getRecentResponses } from "@shared/utils/getRecentResponses.js";
 

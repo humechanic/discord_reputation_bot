@@ -13,5 +13,5 @@ export const initEvents = () => {
 
     commands();
     reactionEvents();
-    onJoinUsersEvents
+    onJoinUsersEvents();
 }

@@ -1,8 +1,8 @@
 import chalk from "chalk";
 import fs from "fs";
 
-import { getDBFile } from "@shared/utils/paths";
-import { initUsers } from "./initUsers";
+import { getDBFile } from "@shared/utils/paths.js";
+import { initUsers } from "./initUsers.js";
 import { getGuild } from "@api/users";
 import { getUsersDB } from "@shared/utils/dbAccess";
 

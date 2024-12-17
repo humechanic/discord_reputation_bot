@@ -5,6 +5,7 @@ import { getDBFile } from '@shared/utils/paths.js';
 import { TRACKED_EMOJI } from '@events/reactions/constants/trackEmojiMap.js';
 import { getRecentReputationResponses } from '@shared/utils/getRecentReputationResponses';
 
+
 const usersFile = getDBFile();
 
 async function writeDatabase(data: any) {
@@ -74,8 +75,7 @@ export const onReputationChange = async (reaction, user) => {
             }
 
             break;
-        }
-        default: break;
-    }
 
+        }
+    }
 }

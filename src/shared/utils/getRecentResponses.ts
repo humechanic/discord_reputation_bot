@@ -17,5 +17,6 @@ export const getRecentResponses = async (reaction, emoji, type = BOT_RESPONSE_TY
 
     // discordClient.user.id === bot id
     const recentResponses = existingMessages.filter(msg => msg.author.id === discordClient.user!.id && msg.content === EMOJI_MESSAGES_MAP.get(emoji) && msg.createdTimestamp >= currentDate.getTime());
+
     return recentResponses;
 }

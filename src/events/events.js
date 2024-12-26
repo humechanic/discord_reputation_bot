@@ -1,9 +1,8 @@
 import { Events } from 'discord.js';
 import { discordClient } from '../api/discordClient.js';
-import { reactionEvents } from './reactions/index.js';
-import { onJoinUsersEvents } from './voice/index';
-
-import { commands } from './commands/index.js';
+import { initReactionEvents } from './reactions/index.js';
+import { onJoinUsersEvents } from './voice/index.js';
+import { initCommands } from './commands/index.js';
 
 export const initEvents = () => {
     discordClient
@@ -11,7 +10,7 @@ export const initEvents = () => {
             console.log(`Logged in as ${discordClient.user.tag}!`);
         });
 
-    commands();
-    reactionEvents();
+    initCommands();
+    initReactionEvents();
     onJoinUsersEvents();
 }

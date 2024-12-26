@@ -1,9 +1,9 @@
 import { Events } from "discord.js";
 import { discordClient } from "../../api/discordClient.js";
-import { autoResponse } from "./autoResponse.js";
+import { sendAutoResponse } from "./autoResponse.js";
 import { onReputationChange } from "@events/reputation/onReputationChange.js";
 
-export const reactionEvents = () => {
+export const initReactionEvents = () => {
 
     discordClient.on(Events.MessageReactionAdd, async (reaction, user, details) => {
         if (user.bot) return;
@@ -19,6 +19,6 @@ export const reactionEvents = () => {
         }
         const emoji = reaction.emoji.name;
         onReputationChange(reaction, user)
-        autoResponse(reaction, emoji);
+        sendAutoResponse(reaction, emoji);
     });
 }

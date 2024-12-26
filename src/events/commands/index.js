@@ -1,7 +1,7 @@
 import { pingCommand } from "./ping.js";
 import { scanCommand } from "./scan.js";
 
-export const commands = () => {
+export const initCommands = () => {
     pingCommand();
     scanCommand();
 }

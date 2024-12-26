@@ -3,7 +3,6 @@ import fs from "fs";
 
 import { getDBFile } from "@shared/utils/paths.js";
 import { initUsers } from "./initUsers.js";
-import { getGuild } from "@api/users";
 import { getUsersDB } from "@shared/utils/dbAccess";
 
 function mergeDataWithFile(initUserDBData, usersFile) {

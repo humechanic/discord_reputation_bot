@@ -2,7 +2,7 @@ import { discordClient } from '../../api/discordClient.js';
 import { Events } from 'discord.js';
 
 
-export const pingCommand = () => {
+export const pingCommand = async () => {
     discordClient.on(Events.InteractionCreate, async interaction => {
 
         if (!interaction.isChatInputCommand()) return;

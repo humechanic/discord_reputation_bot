@@ -1,7 +1,7 @@
 import { pingCommand } from "./ping.js";
 import { scanCommand } from "./scan.js";
 
-export const initCommands = () => {
-    pingCommand();
-    scanCommand();
+export const initCommands = async () => {
+    await pingCommand();
+    await scanCommand();
 }

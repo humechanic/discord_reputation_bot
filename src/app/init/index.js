@@ -1,6 +1,6 @@
 import { initEvents } from "../../events/events.js"; import { initUserDb } from "./initUserDb.js";
 
 export const InitBot = async () => {
-    initEvents();
-    initUserDb();
+    await initEvents();
+    await initUserDb();
 }

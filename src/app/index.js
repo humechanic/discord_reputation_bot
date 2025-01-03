@@ -28,7 +28,7 @@ export const initApp = async () => {
     } finally {
 
         discordClient.login(process.env.BOT_TOKEN);
-        InitBot();
+        await InitBot();
     }
 
 }

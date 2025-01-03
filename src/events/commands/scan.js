@@ -3,7 +3,7 @@ import { DiscordAPIError, Events } from 'discord.js';
 import { discordClient } from '../../api/discordClient.js';
 
 
-export const scanCommand = () => {
+export const scanCommand = async () => {
     discordClient.on(Events.InteractionCreate, async interaction => {
 
         if (!interaction.isChatInputCommand()) return;

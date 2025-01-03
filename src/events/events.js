@@ -4,13 +4,13 @@ import { initReactionEvents } from './reactions/index.js';
 import { onJoinUsersEvents } from './voice/index.js';
 import { initCommands } from './commands/index.js';
 
-export const initEvents = () => {
+export const initEvents = async () => {
     discordClient
         .on(Events.ClientReady, () => {
             console.log(`Logged in as ${discordClient.user.tag}!`);
         });
 
-    initCommands();
-    initReactionEvents();
-    onJoinUsersEvents();
+    await initCommands();
+    await initReactionEvents();
+    await onJoinUsersEvents();
 }

@@ -32,17 +32,17 @@ export const onReputationChange = async (reaction, user) => {
         const users = await reactionDataItem.users.fetch();
         if (reactionDataItem.emoji.name === TRACKED_EMOJI.REGULAR.ARROW_DOUBLE_UP) {
 
-            users.forEach((user) => ups.push(user.username));
+            users.forEach((u) => ups.push(u.username));
         }
         if (reactionDataItem.emoji.name === TRACKED_EMOJI.REGULAR.ARROW_DOUBLE_DOWN) {
 
-            users.forEach((user) => downs.push(user.username));
+            users.forEach((u) => downs.push(u.username));
         }
     }
 
     const [_, existReputationBotMessage] = lastReputationResponseCortage;
-    const isOldMessage = reaction.message.id === existReputationBotMessage.id;
-    const shouldEditexistingMessage = existReputationBotMessage && isOldMessage;
+    const isOldMessage = reaction.message.id === existReputationBotMessage?.id;
+    const shouldEditExistingMessage = existReputationBotMessage && isOldMessage;
 
     switch (emoji) {
         case TRACKED_EMOJI.REGULAR.ARROW_DOUBLE_UP: {
@@ -54,8 +54,8 @@ export const onReputationChange = async (reaction, user) => {
 
             db[reaction.message.author.id].reputationScore += 1;
             await writeDatabase(db);
-            if (shouldEditexistingMessage) {
-                existReputationBotMessage.edit(`${reaction.message.author.username}'s reputation increased by ${ups.join(', ')}, total score ${db[reaction.message.author.id].reputationScore}`);
+            if (shouldEditExistingMessage) {
+                await existReputationBotMessage.edit(`${reaction.message.author.username}'s reputation increased by ${ups.join(', ')}, total score ${db[reaction.message.author.id].reputationScore}`);
             } else {
                 await reaction.message.channel.send(`${reaction.message.author.username}'s reputation increased by ${ups.join(', ')}, total score ${db[reaction.message.author.id].reputationScore}`);
             }
@@ -68,8 +68,8 @@ export const onReputationChange = async (reaction, user) => {
             }
             db[reaction.message.author.id].reputationScore -= 1;
             await writeDatabase(db);
-            if (shouldEditexistingMessage) {
-                existReputationBotMessage.edit(`${reaction.message.author.username}'s reputation decreased by ${downs.join(', ')}, total score ${db[reaction.message.author.id].reputationScore}`);
+            if (shouldEditExistingMessage) {
+                await existReputationBotMessage.edit(`${reaction.message.author.username}'s reputation decreased by ${downs.join(', ')}, total score ${db[reaction.message.author.id].reputationScore}`);
 
             } else {
                 await reaction.message.channel.send(`${reaction.message.author.username}'s reputation decreased by ${downs.join(', ')}, total score ${db[reaction.message.author.id].reputationScore}`);

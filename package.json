@@ -6,9 +6,9 @@
   "main": "index.js",
   "scripts": {
     "clean": "rm -rf build",
-    "start": "node build/src/index.js",
+    "start": "node -r tsconfig-paths/register build/index.js",
     "dev": "nodemon --config .nodemon.json",
-    "build": "tsc --build && tsc-alias"
+    "build": "tsc && tsc-alias"
   },
   "author": "Ivan Golt",
   "license": "ISC",

@@ -3,7 +3,7 @@ import fs from "fs";
 
 import { getDBFile } from "@shared/utils/paths.js";
 import { initUsers } from "./initUsers.js";
-import { getUsersDB } from "@shared/utils/dbAccess";
+import { getUsersDB } from "@shared/utils/dbAccess.js";
 
 function mergeDataWithFile(initUserDBData, usersFile) {
 

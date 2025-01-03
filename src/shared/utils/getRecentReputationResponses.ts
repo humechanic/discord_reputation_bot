@@ -1,11 +1,6 @@
 import { discordClient } from "@api/discordClient.js";
 
-const BOT_RESPONSE_TYPE = {
-    AUTO: 'auto',
-    REPUTATION: 'repo',
-}
-
-export const getRecentReputationResponses = async (reaction, emoji, type = BOT_RESPONSE_TYPE.AUTO) => {
+export const getRecentReputationResponses = async (reaction, emoji) => {
 
     const fetchedMessage = await reaction.message.fetch();
 

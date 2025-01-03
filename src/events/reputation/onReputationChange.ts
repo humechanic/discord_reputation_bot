@@ -3,7 +3,7 @@ import fs from 'fs';
 import { getUsersDB } from '@shared/utils/dbAccess.js';
 import { getDBFile } from '@shared/utils/paths.js';
 import { TRACKED_EMOJI } from '@events/reactions/constants/trackEmojiMap.js';
-import { getRecentReputationResponses } from '@shared/utils/getRecentReputationResponses';
+import { getRecentReputationResponses } from '@shared/utils/getRecentReputationResponses.js';
 
 const usersFile = getDBFile();
 
@@ -39,8 +39,10 @@ export const onReputationChange = async (reaction, user) => {
             users.forEach((user) => downs.push(user.username));
         }
     }
-    const [_, existReputationBotMessage] = lastReputationResponseCortage;
 
+    const [_, existReputationBotMessage] = lastReputationResponseCortage;
+    const isOldMessage = reaction.message.id === existReputationBotMessage.id;
+    const shouldEditexistingMessage = existReputationBotMessage && isOldMessage;
 
     switch (emoji) {
         case TRACKED_EMOJI.REGULAR.ARROW_DOUBLE_UP: {
@@ -52,7 +54,7 @@ export const onReputationChange = async (reaction, user) => {
 
             db[reaction.message.author.id].reputationScore += 1;
             await writeDatabase(db);
-            if (existReputationBotMessage) {
+            if (shouldEditexistingMessage) {
                 existReputationBotMessage.edit(`${reaction.message.author.username}'s reputation increased by ${ups.join(', ')}, total score ${db[reaction.message.author.id].reputationScore}`);
             } else {
                 await reaction.message.channel.send(`${reaction.message.author.username}'s reputation increased by ${ups.join(', ')}, total score ${db[reaction.message.author.id].reputationScore}`);
@@ -66,7 +68,7 @@ export const onReputationChange = async (reaction, user) => {
             }
             db[reaction.message.author.id].reputationScore -= 1;
             await writeDatabase(db);
-            if (existReputationBotMessage) {
+            if (shouldEditexistingMessage) {
                 existReputationBotMessage.edit(`${reaction.message.author.username}'s reputation decreased by ${downs.join(', ')}, total score ${db[reaction.message.author.id].reputationScore}`);
 
             } else {

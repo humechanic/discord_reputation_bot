@@ -1,5 +1,5 @@
 import { Collection, Role } from "discord.js"
-import { adminFilePath, bodyaFilePath } from "../constants"
+import { adminFilePath, bodyaFilePath } from "../constants/index.js"
 
 const ROLES = {
     BODYA: '795755942712311849',

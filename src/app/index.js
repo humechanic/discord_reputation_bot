@@ -4,12 +4,13 @@ import { discordClient } from '../api/discordClient.js';
 import { rankCommandSettings } from '../events/commands/rank.js';
 import { initRolesSettings } from '../events/commands/initRoles.js';
 import { scanCommandSettings } from '../events/commands/scan.js';
-
+import { leaderboardCommandSettings } from '../events/commands/leaderboard.js';
 
 const commands = [
     scanCommandSettings.toJSON(),
     initRolesSettings.toJSON(),
     rankCommandSettings.toJSON(),
+    leaderboardCommandSettings.toJSON(),
 ];
 
 export const initApp = async () => {

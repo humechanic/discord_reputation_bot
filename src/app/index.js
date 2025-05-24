@@ -5,12 +5,14 @@ import { rankCommandSettings } from '../events/commands/rank.js';
 import { initRolesSettings } from '../events/commands/initRoles.js';
 import { scanCommandSettings } from '../events/commands/scan.js';
 import { leaderboardCommandSettings } from '../events/commands/leaderboard.js';
+import { setupCommandSettings } from '../events/commands/setup.js';
 
 const commands = [
     scanCommandSettings.toJSON(),
     initRolesSettings.toJSON(),
     rankCommandSettings.toJSON(),
     leaderboardCommandSettings.toJSON(),
+    setupCommandSettings.toJSON(),
 ];
 
 export const initApp = async () => {

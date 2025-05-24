@@ -1,7 +1,7 @@
-
-import { DiscordAPIError, DiscordErrorData, SlashCommandBuilder, PermissionFlagsBits } from 'discord.js';
+import { DiscordAPIError, SlashCommandBuilder, PermissionFlagsBits } from 'discord.js';
 import { discordClient } from '../../api/discordClient.js';
 import { getUsersDB } from '@shared/utils/dbAccess.js';
+import { splitMessage } from '@shared/utils/splitMessage.js';
 
 export const scanCommandSettings = new SlashCommandBuilder()
     .setName('scan')
@@ -9,34 +9,79 @@ export const scanCommandSettings = new SlashCommandBuilder()
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator);
 
 export const scanCommand = async (interaction: any) => {
+    if (!interaction.isChatInputCommand()) return;
+
     if (interaction.commandName === 'scan') {
-        const usersDB = getUsersDB()
-        const { guilds } = discordClient;
-        const guild = await guilds.fetch(process.env.GUILD_ID || '');
-        const members = await guild.members.fetch();
+        // Check if user has administrator permissions
+        if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
+            await interaction.reply({
+                content: '❌ You need Administrator permissions to use this command.',
+                ephemeral: true
+            });
+            return;
+        }
 
-        const userNames = await Promise.all(Array.from(members.entries()).map(async ([userId, userData]) => {
-            const existingRole = usersDB[userId].role;
-            try {
-                await userData.roles.add(existingRole);
-                return userData.displayName
-            } catch (e) {
-                console.error(JSON.stringify(e));
-                return null
-            }
-        }))
         try {
-            await interaction.deferReply(JSON.stringify(userNames));
-        } catch (e) {
-            if (e instanceof DiscordAPIError) {
-                console.log((e.rawError as DiscordErrorData).errors)
-                await interaction.reply('Opss')
-            } else {
-                console.log(e)
-                await interaction.reply('Unhandled error')
+            await interaction.deferReply({ ephemeral: true });
+
+            const usersDB = getUsersDB();
+            const { guilds } = discordClient;
+            const guild = await guilds.fetch(process.env.GUILD_ID || '');
+            const members = await guild.members.fetch();
+
+            const results = await Promise.all(Array.from(members.entries()).map(async ([userId, userData]) => {
+                const existingRole = usersDB[userId]?.role;
+                if (!existingRole) return null;
+
+                try {
+                    await userData.roles.add(existingRole);
+                    return `✅ ${userData.displayName}(aka ${userData.nickname || userData.user.username}) - Role assigned`;
+                } catch (e) {
+                    console.error(`Failed to assign role to ${userData.displayName}:`, e);
+                    return `❌ ${userData.displayName}(aka ${userData.nickname || userData.user.username}) - Failed to assign role`;
+                }
+            }));
+
+            const successfulAssignments = results.filter(r => r?.includes('✅')).length;
+            const failedAssignments = results.filter(r => r?.includes('❌')).length;
+
+            // Create the summary message
+            const summaryMessage = `**Scan Results**\n` +
+                `Total members processed: ${results.length}\n` +
+                `✅ Successful assignments: ${successfulAssignments}\n` +
+                `❌ Failed assignments: ${failedAssignments}\n\n` +
+                `Detailed results:`;
+
+            // Create the detailed results message
+            const detailedResults = results.filter(Boolean).join('\n');
+
+            // Split messages if needed
+            const messages = splitMessage(summaryMessage + '\n' + detailedResults);
+
+            // Send the first message as a reply
+            await interaction.editReply(messages[0]);
+
+            // Send additional messages as follow-ups
+            for (let i = 1; i < messages.length; i++) {
+                await interaction.followUp({
+                    content: messages[i],
+                    ephemeral: true
+                });
             }
 
+        } catch (e) {
+            console.error('Scan command error:', e);
+            if (e instanceof DiscordAPIError) {
+                await interaction.editReply({
+                    content: '❌ An error occurred while processing the command. Please try again later.',
+                    ephemeral: true
+                });
+            } else {
+                await interaction.editReply({
+                    content: '❌ An unexpected error occurred. Please try again later.',
+                    ephemeral: true
+                });
+            }
         }
     }
-
 }

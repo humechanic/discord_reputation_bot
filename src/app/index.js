@@ -1,4 +1,3 @@
-
 import { REST, Routes } from 'discord.js';
 import { InitBot } from './init/index.js';
 import { discordClient } from '../api/discordClient.js';
@@ -12,7 +11,19 @@ const commands = [
         name: 'scan',
         description: 'Scan server for create a snapshot of current user database',
     },
-
+    {
+        name: 'merank',
+        description: 'Shows your current reputation score and role information',
+    },
+    {
+        name: 'merankprivate',
+        description: 'Shows your current reputation score and role information (private)',
+    },
+    {
+        name: 'initroles',
+        description: 'Initialize or update reputation-based roles',
+        default_member_permissions: '8' // Administrator permission
+    }
 ];
 
 export const initApp = async () => {

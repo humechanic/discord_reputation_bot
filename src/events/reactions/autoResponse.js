@@ -2,7 +2,7 @@ import { EMOJI_MESSAGES_MAP } from "./constants/messages.js";
 import { getRecentResponses } from "@shared/utils/getRecentResponses.js";
 
 export const sendAutoResponse = async (reaction, emoji) => {
-    console.log(reaction.message.channelId);
+
     if (!EMOJI_MESSAGES_MAP.has(emoji)) return;
 
     const recentResponses = await getRecentResponses(reaction, emoji);

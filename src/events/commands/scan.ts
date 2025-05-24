@@ -2,6 +2,7 @@ import { DiscordAPIError, SlashCommandBuilder, PermissionFlagsBits } from 'disco
 import { discordClient } from '../../api/discordClient.js';
 import { getUsersDB } from '@shared/utils/dbAccess.js';
 import { splitMessage } from '@shared/utils/splitMessage.js';
+import { ProtectCommand } from '@shared/utils/isAdminCommand.js';
 
 export const scanCommandSettings = new SlashCommandBuilder()
     .setName('scan')
@@ -9,17 +10,10 @@ export const scanCommandSettings = new SlashCommandBuilder()
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator);
 
 export const scanCommand = async (interaction: any) => {
-    if (!interaction.isChatInputCommand()) return;
 
     if (interaction.commandName === 'scan') {
-        // Check if user has administrator permissions
-        if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
-            await interaction.reply({
-                content: '❌ You need Administrator permissions to use this command.',
-                ephemeral: true
-            });
-            return;
-        }
+
+        await ProtectCommand(interaction);
 
         try {
             await interaction.deferReply({ ephemeral: true });

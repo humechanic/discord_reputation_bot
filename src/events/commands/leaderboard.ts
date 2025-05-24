@@ -1,5 +1,5 @@
 import { getUsersDB } from '@shared/utils/dbAccess.js';
-import { SlashCommandBuilder } from 'discord.js';
+import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
 import { getRoleForReputation } from '../../shared/utils/roleManager.js';
 
 interface UserData {
@@ -21,7 +21,7 @@ export const leaderboardCommandSettings = new SlashCommandBuilder()
             .setDescription('Whether to show the response only to you')
             .setRequired(false));
 
-export async function leaderboardCommand(interaction: any) {
+export async function leaderboardCommand(interaction: ChatInputCommandInteraction) {
     if (interaction.commandName === 'leaderboard') {
         try {
             const limit = interaction.options.getInteger('limit') ?? 10;
@@ -29,14 +29,15 @@ export async function leaderboardCommand(interaction: any) {
 
             const usersDB = getUsersDB();
             const guild = interaction.guild;
-            const members = await guild.members.fetch();
+            const members = await guild?.members.fetch();
 
             const usersWithData = Object.entries(usersDB as Record<string, UserData>)
                 .map(([userId, data]) => {
-                    const member = members.get(userId);
+                    const member = members?.get(userId);
+
                     return {
                         userId,
-                        username: member?.user.username ?? 'Unknown User',
+                        username: ((member?.user.displayName || member?.user.username) ?? 'Unknown User').replace(/[^a-zA-Zа-яА-Я\s]/g, ''),
                         reputationScore: data.reputationScore,
                         joinedAt: member?.joinedAt,
                         role: getRoleForReputation(data.reputationScore)
@@ -121,7 +122,6 @@ export async function leaderboardCommand(interaction: any) {
             await interaction.reply({
                 content: '❌ **Error**\nThere was an error fetching the leaderboard.',
                 ephemeral: true,
-                details: JSON.stringify(error)
             });
         }
     }

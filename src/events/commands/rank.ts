@@ -57,8 +57,8 @@ export async function rankCommand(interaction: any) {
                 .sort((a, b) => a.requiredReputation - b.requiredReputation)[0];
 
             const message = [
-                `# 🏆 Reputation Status`,
-                `## 👤 User Information`,
+                `### 🏆 Reputation Status`,
+                `### 👤 User Information`,
                 `**User:** ${targetUser.username}`,
                 `**Reputation Score:** ${userData.reputationScore} ⭐`,
                 `**Current Role:** ${currentRole} 👑`,

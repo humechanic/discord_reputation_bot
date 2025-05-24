@@ -1,7 +1,6 @@
 import { REST, Routes } from 'discord.js';
 import { InitBot } from './init/index.js';
 import { discordClient } from '../api/discordClient.js';
-import { meRankCommandSettings, meRankPrivateCommandSettings } from '../events/commands/merank.js';
 import { rankCommandSettings } from '../events/commands/rank.js';
 import { initRolesSettings } from '../events/commands/initRoles.js';
 import { scanCommandSettings } from '../events/commands/scan.js';
@@ -10,8 +9,6 @@ import { scanCommandSettings } from '../events/commands/scan.js';
 const commands = [
     scanCommandSettings.toJSON(),
     initRolesSettings.toJSON(),
-    meRankCommandSettings.toJSON(),
-    meRankPrivateCommandSettings.toJSON(),
     rankCommandSettings.toJSON(),
 ];
 

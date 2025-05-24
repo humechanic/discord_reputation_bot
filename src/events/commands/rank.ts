@@ -5,16 +5,40 @@ import { ROLE_HIERARCHY } from '../../shared/config/roles.js';
 
 export const rankCommandSettings = new SlashCommandBuilder()
     .setName('rank')
-    .setDescription('Shows reputation score and role information for any user')
-    .addUserOption(option =>
-        option.setName('user')
-            .setDescription('The user to check (leave empty to check yourself)')
-            .setRequired(false));
+    .setDescription('Shows reputation score and role information')
+    .addSubcommand(subcommand =>
+        subcommand
+            .setName('me')
+            .setDescription('Shows your own reputation score and role information')
+            .addBooleanOption(option =>
+                option.setName('silent')
+                    .setDescription('Whether to show the response only to you')
+                    .setRequired(false)))
+    .addSubcommand(subcommand =>
+        subcommand
+            .setName('user')
+            .setDescription('Shows reputation score and role information for a specific user')
+            .addUserOption(option =>
+                option.setName('target')
+                    .setDescription('The user to check')
+                    .setRequired(true))
+            .addBooleanOption(option =>
+                option.setName('silent')
+                    .setDescription('Whether to show the response only to you')
+                    .setRequired(false)));
 
 export async function rankCommand(interaction: any) {
     if (interaction.commandName === 'rank') {
         try {
-            const targetUser = interaction.options.getUser('user') || interaction.user;
+            const isSilent = interaction.options.getBoolean('silent') ?? true;
+            let targetUser: User;
+
+            if (interaction.options.getSubcommand() === 'me') {
+                targetUser = interaction.user;
+            } else {
+                targetUser = interaction.options.getUser('target')!;
+            }
+
             const userId = targetUser.id;
             const usersDB = getUsersDB();
             const userData = usersDB[userId];
@@ -22,7 +46,7 @@ export async function rankCommand(interaction: any) {
             if (!userData) {
                 await interaction.reply({
                     content: `❌ **No Data Found**\n${targetUser.id === interaction.user.id ? 'You' : targetUser.username} don't have a reputation score yet.`,
-                    ephemeral: true
+                    ephemeral: isSilent
                 });
                 return;
             }
@@ -45,7 +69,7 @@ export async function rankCommand(interaction: any) {
 
             await interaction.reply({
                 content: message,
-                ephemeral: true
+                ephemeral: isSilent
             });
         } catch (error) {
             console.error('Error in rank command:', JSON.stringify(error));

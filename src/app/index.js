@@ -1,29 +1,18 @@
 import { REST, Routes } from 'discord.js';
 import { InitBot } from './init/index.js';
 import { discordClient } from '../api/discordClient.js';
+import { meRankCommandSettings, meRankPrivateCommandSettings } from '../events/commands/merank.js';
+import { rankCommandSettings } from '../events/commands/rank.js';
+import { initRolesSettings } from '../events/commands/initRoles.js';
+import { scanCommandSettings } from '../events/commands/scan.js';
+
 
 const commands = [
-    {
-        name: 'ping',
-        description: 'Replies with Pong!',
-    },
-    {
-        name: 'scan',
-        description: 'Scan server for create a snapshot of current user database',
-    },
-    {
-        name: 'merank',
-        description: 'Shows your current reputation score and role information',
-    },
-    {
-        name: 'merankprivate',
-        description: 'Shows your current reputation score and role information (private)',
-    },
-    {
-        name: 'initroles',
-        description: 'Initialize or update reputation-based roles',
-        default_member_permissions: '8' // Administrator permission
-    }
+    scanCommandSettings.toJSON(),
+    initRolesSettings.toJSON(),
+    meRankCommandSettings.toJSON(),
+    meRankPrivateCommandSettings.toJSON(),
+    rankCommandSettings.toJSON(),
 ];
 
 export const initApp = async () => {
@@ -37,11 +26,9 @@ export const initApp = async () => {
     } catch (error) {
         console.error(error);
     } finally {
-
         discordClient.login(process.env.BOT_TOKEN);
         await InitBot();
     }
-
 }
 
 

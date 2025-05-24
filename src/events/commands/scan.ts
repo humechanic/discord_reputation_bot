@@ -1,8 +1,12 @@
 
-import { DiscordAPIError, DiscordErrorData, Events } from 'discord.js';
+import { DiscordAPIError, DiscordErrorData, SlashCommandBuilder, PermissionFlagsBits } from 'discord.js';
 import { discordClient } from '../../api/discordClient.js';
 import { getUsersDB } from '@shared/utils/dbAccess.js';
 
+export const scanCommandSettings = new SlashCommandBuilder()
+    .setName('scan')
+    .setDescription('Scan server for create a snapshot of current user database')
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator);
 
 export const scanCommand = async (interaction: any) => {
     if (interaction.commandName === 'scan') {

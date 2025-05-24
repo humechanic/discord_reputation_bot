@@ -1,29 +1,28 @@
 import { getUsersDB } from '@shared/utils/dbAccess.js';
+import { SlashCommandBuilder, User } from 'discord.js';
 import { getRoleForReputation } from '../../shared/utils/roleManager.js';
 import { ROLE_HIERARCHY } from '../../shared/config/roles.js';
-import { SlashCommandBuilder } from 'discord.js';
 
-export const meRankCommandSettings = new SlashCommandBuilder()
-    .setName('merank')
-    .setDescription('Shows your current reputation score and role information (public)');
+export const rankCommandSettings = new SlashCommandBuilder()
+    .setName('rank')
+    .setDescription('Shows reputation score and role information for any user')
+    .addUserOption(option =>
+        option.setName('user')
+            .setDescription('The user to check (leave empty to check yourself)')
+            .setRequired(false));
 
-export const meRankPrivateCommandSettings = new SlashCommandBuilder()
-    .setName('merankprivate')
-    .setDescription('Shows your current reputation score and role information (private)');
-
-export async function meRankCommand(interaction: any) {
-    if (interaction.commandName.includes('merank')) {
-        const isPrivate = interaction.commandName === 'merankprivate';
-
+export async function rankCommand(interaction: any) {
+    if (interaction.commandName === 'rank') {
         try {
-            const userId = interaction.user.id;
+            const targetUser = interaction.options.getUser('user') || interaction.user;
+            const userId = targetUser.id;
             const usersDB = getUsersDB();
             const userData = usersDB[userId];
 
             if (!userData) {
                 await interaction.reply({
-                    content: '❌ **No Data Found**\nYou don\'t have a reputation score yet.',
-                    ephemeral: isPrivate
+                    content: `❌ **No Data Found**\n${targetUser.id === interaction.user.id ? 'You' : targetUser.username} don't have a reputation score yet.`,
+                    ephemeral: true
                 });
                 return;
             }
@@ -36,22 +35,23 @@ export async function meRankCommand(interaction: any) {
             const message = [
                 `# 🏆 Reputation Status`,
                 `## 👤 User Information`,
+                `**User:** ${targetUser.username}`,
                 `**Reputation Score:** ${userData.reputationScore} ⭐`,
                 `**Current Role:** ${currentRole} 👑`,
                 nextRole
                     ? `## 🎯 Next Milestone\n**Role:** ${nextRole.name}\n**Required Reputation:** ${nextRole.requiredReputation} ⭐\n**Points Needed:** ${nextRole.requiredReputation - userData.reputationScore} ⭐`
-                    : '## 🎉 Achievement\nYou have reached the highest role!'
+                    : '## 🎉 Achievement\nThis user has reached the highest role!'
             ].join('\n\n');
 
             await interaction.reply({
                 content: message,
-                ephemeral: isPrivate
+                ephemeral: true
             });
         } catch (error) {
-            console.error('Error in merank command:', JSON.stringify(error));
+            console.error('Error in rank command:', JSON.stringify(error));
             await interaction.reply({
-                content: '❌ **Error**\nThere was an error fetching your reputation information.',
-                ephemeral: isPrivate,
+                content: '❌ **Error**\nThere was an error fetching reputation information.',
+                ephemeral: true,
                 details: JSON.stringify(error)
             });
         }

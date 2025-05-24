@@ -1,7 +1,7 @@
-import { SlashCommandBuilder, PermissionFlagsBits, Colors, PermissionResolvable } from 'discord.js';
+import { Colors, PermissionFlagsBits, PermissionResolvable, SlashCommandBuilder } from 'discord.js';
 import { ROLE_HIERARCHY } from '../../shared/config/roles.js';
 
-export const data = new SlashCommandBuilder()
+export const initRolesSettings = new SlashCommandBuilder()
     .setName('initroles')
     .setDescription('Initialize or update reputation-based roles')
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator);

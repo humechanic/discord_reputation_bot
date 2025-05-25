@@ -96,6 +96,7 @@ export async function setupCommand(interaction: ChatInputCommandInteraction) {
                     name: role.name,
                     color: role.color as ColorResolvable,
                     permissions: role.permissions,
+                    hoist: true,
                     reason: 'Setup command: auto-created reputation role'
                 });
             }

@@ -44,19 +44,19 @@ export async function setupCommand(interaction: ChatInputCommandInteraction) {
 
     // EDIT MODE
     if (editValue) {
-        // 1. Ищем роль в сессии
+        // 1. Search role in session
         let session = setupSessions.get(userId);
         let foundRole: RoleConfig | undefined;
         if (session) {
             foundRole = session.roles.find(r => r.name === editValue || r.id === editValue);
         }
-        // 2. Если не нашли — ищем в roles.json
+        // 2. If not found — search in roles.json
         if (!foundRole) {
             try {
                 const file = readFileSync(ROLES_PATH, 'utf-8');
                 const roles: RoleConfig[] = JSON.parse(file);
                 foundRole = roles.find(r => r.name === editValue || r.id === editValue);
-                // Если нашли — добавляем в сессию для редактирования
+                // If found — add to session for editing
                 if (foundRole) {
                     if (!session) {
                         session = { roles: [], step: 0, currentRole: {}, channelId: interaction.channelId };
@@ -70,11 +70,11 @@ export async function setupCommand(interaction: ChatInputCommandInteraction) {
             await interaction.reply({ content: `❌ Роль с именем или ID "${editValue}" не найдена.`, ephemeral: true });
             return;
         }
-        // Запускаем интерактив с текущими значениями роли
+        // Start interactive with current role values
         if (session) {
             session.currentRole = { ...foundRole };
             session.step = 0;
-            await interaction.reply({ content: `✏️ Редактирование роли "${foundRole.name}". Введите новое имя роли: Для пропуска шага просто отправьте пустое сообщение.`, ephemeral: true });
+            await interaction.reply({ content: `✏️ Редактирование роли "${foundRole.name}". Для пропуска шага отправьте 0.`, ephemeral: true });
             await waitForNextStep(interaction, userId, setupSessions);
         }
         return;
@@ -86,7 +86,7 @@ export async function setupCommand(interaction: ChatInputCommandInteraction) {
             await interaction.reply({ content: '❌ Нет данных для сохранения. Сначала добавьте хотя бы одну роль через /setup.', ephemeral: true });
             return;
         }
-        // Создать роли на сервере
+        // Create roles on the server
         const guild = interaction.guild;
         const createdRoles: RoleConfig[] = [];
         for (const role of session.roles) {
@@ -112,7 +112,7 @@ export async function setupCommand(interaction: ChatInputCommandInteraction) {
         return;
     }
 
-    // Если нет сессии — стартуем интерактив
+    // If there is no session — start interactive
     if (!setupSessions.has(userId)) {
         setupSessions.set(userId, { roles: [], step: 0, currentRole: {}, channelId: interaction.channelId });
         await interaction.reply({ content: '🛠️ Начинаем настройку ролей! Введите название первой роли в этот канал:', ephemeral: true });

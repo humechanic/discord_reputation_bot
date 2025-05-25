@@ -1,5 +1,15 @@
-import { GuildMember } from 'discord.js';
+import { GuildMember, PermissionsBitField } from 'discord.js';
 import { ROLE_HIERARCHY } from '../config/roles.js';
+import fs from 'fs/promises';
+import path from 'path';
+
+interface RoleData {
+    name: string;
+    color: string;
+    permissions: string[];
+    requiredReputation: number;
+    id: string;
+}
 
 export async function updateUserRole(member: GuildMember, reputation: number): Promise<void> {
     try {
@@ -28,10 +38,21 @@ export async function updateUserRole(member: GuildMember, reputation: number): P
     }
 }
 
-export function getRoleForReputation(reputation: number): string {
-    const applicableRole = ROLE_HIERARCHY
-        .filter(role => reputation >= role.requiredReputation)
-        .sort((a, b) => b.requiredReputation - a.requiredReputation)[0];
+export async function getRolesFromConfig(): Promise<RoleData[]> {
+    try {
+        const rolesPath = path.join(process.cwd(), 'db', 'roles.json');
+        const rolesData = await fs.readFile(rolesPath, 'utf-8');
+        return JSON.parse(rolesData);
+    } catch (error) {
+        console.error('Error reading roles config:', error);
+        return [];
+    }
+}
 
-    return applicableRole ? applicableRole.name : 'No Role';
+export function getRoleForReputation(reputationScore: number, roles: RoleData[]): string {
+    const eligibleRoles = roles
+        .filter(role => role.requiredReputation <= reputationScore)
+        .sort((a, b) => b.requiredReputation - a.requiredReputation);
+
+    return eligibleRoles[0]?.name || 'No Role';
 } 

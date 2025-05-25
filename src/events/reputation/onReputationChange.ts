@@ -73,10 +73,22 @@ export const onReputationChange = async (reaction: MessageReaction, user: User) 
                 if (ups.length && downs.length) {
                     await getEditMessage(existReputationBotMessage, reactionAuthor, ups, downs, db[reactionAuthor.id].reputationScore)
                 } else {
-                    await existReputationBotMessage.edit(`${reactionAuthor.username}'s reputation increased by ${ups.join(', ')}, total score ${db[reactionAuthor.id].reputationScore}`);
+                    await existReputationBotMessage.edit(
+                        `### 📊 Изменение репутации\n` +
+                        `**Пользователь:** ${reactionAuthor.username}\n` +
+                        `**Действие:** Повышение репутации\n` +
+                        `**От:** ${ups.join(', ')}\n` +
+                        `**Новый рейтинг:** ${db[reactionAuthor.id].reputationScore} ⭐`
+                    );
                 }
             } else {
-                await channel.send(`${reactionAuthor.username}'s reputation increased by ${ups.join(', ')}, total score ${db[reactionAuthor.id].reputationScore}`);
+                await channel.send(
+                    `### 📊 Изменение репутации\n` +
+                    `**Пользователь:** ${reactionAuthor.username}\n` +
+                    `**Действие:** Повышение репутации\n` +
+                    `**От:** ${ups.join(', ')}\n` +
+                    `**Новый рейтинг:** ${db[reactionAuthor.id].reputationScore} ⭐`
+                );
             }
             setTimeout(() => {
                 userReactionCooldown.delete(`${user.id}-up`)
@@ -101,10 +113,22 @@ export const onReputationChange = async (reaction: MessageReaction, user: User) 
                 if (ups.length && downs.length) {
                     await getEditMessage(existReputationBotMessage, reactionAuthor, ups, downs, db[reactionAuthor.id].reputationScore)
                 } else {
-                    await existReputationBotMessage.edit(`${reactionAuthor.username}'s reputation decreased by ${downs.join(', ')}, total score ${db[reactionAuthor.id].reputationScore}`);
+                    await existReputationBotMessage.edit(
+                        `### 📊 Изменение репутации\n` +
+                        `**Пользователь:** ${reactionAuthor.username}\n` +
+                        `**Действие:** Понижение репутации\n` +
+                        `**От:** ${downs.join(', ')}\n` +
+                        `**Новый рейтинг:** ${db[reactionAuthor.id].reputationScore} ⭐`
+                    );
                 }
             } else {
-                await channel.send(`${reactionAuthor.username}'s reputation decreased by ${downs.join(', ')}, total score ${db[reactionAuthor.id].reputationScore}`);
+                await channel.send(
+                    `### 📊 Изменение репутации\n` +
+                    `**Пользователь:** ${reactionAuthor.username}\n` +
+                    `**Действие:** Понижение репутации\n` +
+                    `**От:** ${downs.join(', ')}\n` +
+                    `**Новый рейтинг:** ${db[reactionAuthor.id].reputationScore} ⭐`
+                );
             }
             setTimeout(() => {
                 userReactionCooldown.delete(`${user.id}-down`)

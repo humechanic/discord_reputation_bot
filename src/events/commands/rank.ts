@@ -1,7 +1,6 @@
 import { getUsersDB } from '@shared/utils/dbAccess.js';
 import { SlashCommandBuilder, User } from 'discord.js';
-import { getRoleForReputation } from '../../shared/utils/roleManager.js';
-import { ROLE_HIERARCHY } from '../../shared/config/roles.js';
+import { getRoleForReputation, getRolesFromConfig } from '../../shared/utils/roleManager.js';
 
 export const rankCommandSettings = new SlashCommandBuilder()
     .setName('rank')
@@ -51,8 +50,9 @@ export async function rankCommand(interaction: any) {
                 return;
             }
 
-            const currentRole = getRoleForReputation(userData.reputationScore);
-            const nextRole = ROLE_HIERARCHY
+            const roles = await getRolesFromConfig();
+            const currentRole = getRoleForReputation(userData.reputationScore, roles);
+            const nextRole = roles
                 .filter(role => role.requiredReputation > userData.reputationScore)
                 .sort((a, b) => a.requiredReputation - b.requiredReputation)[0];
 

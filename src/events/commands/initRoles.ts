@@ -1,5 +1,6 @@
+import { ROLE_HIERARCHY } from '@shared/config/roles.js';
 import { Colors, PermissionFlagsBits, PermissionResolvable, SlashCommandBuilder } from 'discord.js';
-import { ROLE_HIERARCHY } from '../../shared/config/roles.js';
+
 
 export const initRolesSettings = new SlashCommandBuilder()
     .setName('initroles')

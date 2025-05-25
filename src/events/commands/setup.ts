@@ -2,6 +2,7 @@ import { SlashCommandBuilder, PermissionFlagsBits, PermissionResolvable, ChatInp
 import { writeFile } from 'fs/promises';
 import path from 'path';
 import { waitForNextStep } from './utils/setup.js';
+import { readFileSync } from 'fs';
 
 export interface RoleConfig {
     name: string;
@@ -26,6 +27,10 @@ export const setupCommandSettings = new SlashCommandBuilder()
     .addBooleanOption(option =>
         option.setName('finished')
             .setDescription('Finish setup and save roles')
+            .setRequired(false))
+    .addStringOption(option =>
+        option.setName('edit')
+            .setDescription('Edit role by name or ID')
             .setRequired(false));
 
 const ROLES_PATH = path.join(process.cwd(), 'db', 'roles.json');
@@ -34,8 +39,46 @@ export async function setupCommand(interaction: ChatInputCommandInteraction) {
     if (interaction.commandName !== 'setup') return;
     const userId = interaction.user.id;
     const finished = interaction.options.getBoolean('finished') ?? false;
+    const editValue = interaction.options.getString('edit');
     const channel = interaction.channel;
 
+    // EDIT MODE
+    if (editValue) {
+        // 1. Ищем роль в сессии
+        let session = setupSessions.get(userId);
+        let foundRole: RoleConfig | undefined;
+        if (session) {
+            foundRole = session.roles.find(r => r.name === editValue || r.id === editValue);
+        }
+        // 2. Если не нашли — ищем в roles.json
+        if (!foundRole) {
+            try {
+                const file = readFileSync(ROLES_PATH, 'utf-8');
+                const roles: RoleConfig[] = JSON.parse(file);
+                foundRole = roles.find(r => r.name === editValue || r.id === editValue);
+                // Если нашли — добавляем в сессию для редактирования
+                if (foundRole) {
+                    if (!session) {
+                        session = { roles: [], step: 0, currentRole: {}, channelId: interaction.channelId };
+                        setupSessions.set(userId, session);
+                    }
+                    session.roles.push(foundRole);
+                }
+            } catch { }
+        }
+        if (!foundRole) {
+            await interaction.reply({ content: `❌ Роль с именем или ID "${editValue}" не найдена.`, ephemeral: true });
+            return;
+        }
+        // Запускаем интерактив с текущими значениями роли
+        if (session) {
+            session.currentRole = { ...foundRole };
+            session.step = 0;
+            await interaction.reply({ content: `✏️ Редактирование роли "${foundRole.name}". Введите новое имя роли: Для пропуска шага просто отправьте пустое сообщение.`, ephemeral: true });
+            await waitForNextStep(interaction, userId, setupSessions);
+        }
+        return;
+    }
 
     if (finished) {
         const session = setupSessions.get(userId);

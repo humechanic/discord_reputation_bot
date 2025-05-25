@@ -27,7 +27,7 @@ export const initReactionEvents = async () => {
 
             if (reaction.partial) await reaction.fetch();
 
-            console.log(`${user.tag} убрал реакцию ${reaction.emoji.name} c сообщения "${reaction.message.content}"`);
+            console.log(`${user.displayName} убрал реакцию ${reaction.emoji.name} c сообщения "${reaction.message.content}"`);
 
 
         } catch (error) {

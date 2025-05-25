@@ -1,6 +1,4 @@
 import { discordClient } from "@api/discordClient.js";
-import { MESSAGE_TYPES } from "../constants/messageTypes.js";
-import { getMessageType } from "./messageTypeUtils.js";
 
 export const getRecentReputationResponses = async (reaction, emoji) => {
     const fetchedMessage = await reaction.message.fetch();
@@ -12,10 +10,8 @@ export const getRecentReputationResponses = async (reaction, emoji) => {
     const recentResponses = existingMessages.filter(msg => {
         if (msg.author.id !== discordClient.user!.id) return false;
         if (msg.createdTimestamp <= currentDate.getTime()) return false;
-
-        const messageType = getMessageType(msg.content);
-        console.log('recentResponse type', messageType)
-        return messageType === MESSAGE_TYPES.REPUTATION_CHANGE;
+        if (!msg.reference?.messageId) return false;
+        return msg.reference.messageId === reaction.message.id;
     });
 
     return Array.from(recentResponses.entries()).shift() || [null, null];

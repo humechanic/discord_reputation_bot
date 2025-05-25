@@ -47,7 +47,6 @@ export const onReputationChange = async (reaction: MessageReaction, user: User) 
     }
 
     const [_, existReputationBotMessage] = lastReputationResponseCortage;
-    const isOldMessage = reaction.message.id === existReputationBotMessage?.id;
     const shouldEditExistingMessage = existReputationBotMessage;
 
     const reactionAuthor = reaction.message.author;
@@ -59,15 +58,15 @@ export const onReputationChange = async (reaction: MessageReaction, user: User) 
     switch (emoji) {
         case TRACKED_EMOJI.REGULAR.ARROW_DOUBLE_UP: {
 
-            // if (reactionAuthor.username === user.username) {
-            //     channel.messages.fetch()
-            //     await channel.send('Kak tebe eto v golovu prishlo, ebanat))')
-            //     return;
-            // }
-            // if (userReactionCooldown.has(`${user.id}-up`)) {
-            //     return;
-            // }
-            // userReactionCooldown.set(`${user.id}-up`, true);
+            if (reactionAuthor.username === user.username) {
+                channel.messages.fetch()
+                await channel.send('Kak tebe eto v golovu prishlo, ebanat))')
+                return;
+            }
+            if (userReactionCooldown.has(`${user.id}-up`)) {
+                return;
+            }
+            userReactionCooldown.set(`${user.id}-up`, true);
 
             db[reactionAuthor.id].reputationScore += 1;
             await writeDatabase(db);
@@ -92,24 +91,24 @@ export const onReputationChange = async (reaction: MessageReaction, user: User) 
                     `**От:** ${ups.join(', ')}\n` +
                     `**Новый рейтинг:** ${db[reactionAuthor.id].reputationScore} ⭐`;
 
-                await channel.send(addMessageType(content, MESSAGE_TYPES.REPUTATION_CHANGE));
+                await channel.send({ content: addMessageType(content, MESSAGE_TYPES.REPUTATION_CHANGE), reply: { messageReference: reaction.message.id } });
             }
-            // setTimeout(() => {
-            //     userReactionCooldown.delete(`${user.id}-up`)
-            // }, 60 * 3 * 60 * 1000)
+            setTimeout(() => {
+                userReactionCooldown.delete(`${user.id}-up`)
+            }, 60 * 3 * 60 * 1000)
             break;
         }
         case TRACKED_EMOJI.REGULAR.ARROW_DOUBLE_DOWN: {
-            // if (userReactionCooldown.has(`${user.id}-down`)) {
-            //     // delete reaction
-            //     return;
-            // }
+            if (userReactionCooldown.has(`${user.id}-down`)) {
+                // delete reaction
+                return;
+            }
 
             if (reactionAuthor.username === user.username) {
                 await channel.send(`A вот это - прекрасная идея ${user.username}!`)
             }
 
-            // userReactionCooldown.set(`${user.id}-down`, true);
+            userReactionCooldown.set(`${user.id}-down`, true);
 
             db[reactionAuthor.id].reputationScore -= 1;
             await writeDatabase(db);
@@ -134,11 +133,11 @@ export const onReputationChange = async (reaction: MessageReaction, user: User) 
                     `**От:** ${downs.join(', ')}\n` +
                     `**Новый рейтинг:** ${db[reactionAuthor.id].reputationScore} ⭐`;
 
-                await channel.send(addMessageType(content, MESSAGE_TYPES.REPUTATION_CHANGE));
+                await channel.send({ content: addMessageType(content, MESSAGE_TYPES.REPUTATION_CHANGE), reply: { messageReference: reaction.message.id } });
             }
-            // setTimeout(() => {
-            //     userReactionCooldown.delete(`${user.id}-down`)
-            // }, 60 * 3 * 60 * 1000)
+            setTimeout(() => {
+                userReactionCooldown.delete(`${user.id}-down`)
+            }, 60 * 3 * 60 * 1000)
             break;
         }
         default: break;

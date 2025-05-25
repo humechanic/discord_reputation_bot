@@ -2,6 +2,7 @@ import { getUsersDB } from '@shared/utils/dbAccess.js';
 import { SlashCommandBuilder, User } from 'discord.js';
 import { getRoleForReputation, getRolesFromConfig } from '../../shared/utils/roleManager.js';
 
+
 export const rankCommandSettings = new SlashCommandBuilder()
     .setName('rank')
     .setDescription('Shows reputation score and role information')
@@ -29,7 +30,7 @@ export const rankCommandSettings = new SlashCommandBuilder()
 export async function rankCommand(interaction: any) {
     if (interaction.commandName === 'rank') {
         try {
-            const isSilent = interaction.options.getBoolean('silent') ?? true;
+            const isSilent = interaction.options.getBoolean('silent') ?? false;
             let targetUser: User;
 
             if (interaction.options.getSubcommand() === 'me') {

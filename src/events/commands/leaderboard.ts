@@ -1,6 +1,7 @@
 import { getUsersDB } from '@shared/utils/dbAccess.js';
 import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
 import { getRoleForReputation } from '../../shared/utils/roleManager.js';
+import { getDBRoles } from '@shared/utils/roles/getDBRoles.js';
 
 interface UserData {
     reputationScore: number;
@@ -30,6 +31,7 @@ export async function leaderboardCommand(interaction: ChatInputCommandInteractio
             const usersDB = getUsersDB();
             const guild = interaction.guild;
             const members = await guild?.members.fetch();
+            const dbRoles = await getDBRoles();
 
             const usersWithData = Object.entries(usersDB as Record<string, UserData>)
                 .map(([userId, data]) => {
@@ -40,7 +42,7 @@ export async function leaderboardCommand(interaction: ChatInputCommandInteractio
                         username: ((member?.user.displayName || member?.user.username) ?? 'Unknown User').replace(/[^a-zA-Zа-яА-Я\s]/g, ''),
                         reputationScore: data.reputationScore,
                         joinedAt: member?.joinedAt,
-                        role: getRoleForReputation(data.reputationScore)
+                        role: getRoleForReputation(data.reputationScore, dbRoles)
                     };
                 })
                 .filter(user => user.joinedAt)
@@ -100,9 +102,10 @@ export async function leaderboardCommand(interaction: ChatInputCommandInteractio
                 const role = user.role.length > maxRoleLength
                     ? user.role.slice(0, maxRoleLength - 1) + '…'
                     : user.role;
+                const normalizedRole = role.replace(/[^a-zA-Zа-яА-Я\s]/g, '');
                 const score = user.reputationScore.toString().padStart(maxScoreLength, ' ');
                 const joinedAt = user.joinedAt?.toLocaleDateString('ru-RU') ?? 'Unknown';
-                return `│ ${pos} │ ${username.padEnd(maxUsernameLength)} │ ${role.padEnd(maxRoleLength)} │ ${score} │ ${joinedAt.padEnd(joinedAtLength)} │`;
+                return `│ ${pos} │ ${username.padEnd(maxUsernameLength)} │ ${normalizedRole.padEnd(maxRoleLength)} │ ${score} │ ${joinedAt.padEnd(joinedAtLength)} │`;
             });
 
             // Footer

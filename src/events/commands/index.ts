@@ -6,6 +6,7 @@ import { initRolesCommand } from "./initRoles.js";
 import { rankCommand } from "./rank.js";
 import { leaderboardCommand } from "./leaderboard.js";
 import { setupCommand } from "./setup.js";
+import { setRankScoreCommand } from "./setRankScore.js";
 
 export const initCommands = async () => {
     discordClient.on(Events.InteractionCreate, async interaction => {
@@ -18,6 +19,7 @@ export const initCommands = async () => {
         await setupCommand(interaction);
         await leaderboardCommand(interaction);
         await scanCommand(interaction);
+        await setRankScoreCommand(interaction);
 
     });
 }

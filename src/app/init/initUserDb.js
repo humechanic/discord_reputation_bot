@@ -37,10 +37,8 @@ export const initUserDb = async () => {
     const usersDBData = getUsersDB();
     const usersDBFile = getDBFile();
 
-    // if (!Object.keys(usersDBData).length) {
-
     mergeDataWithFile(initUserDBData, usersDBFile);
-    // }
+
 }
 // '1203665477260419112'- 'завсегдатай'
 // '1203665541168898049'- 'душа сообщества'

@@ -55,9 +55,12 @@ export const scanCommand = async (interaction: any) => {
                 }
                 // Добавить подходящую роль, если её нет
                 if (!member.roles.cache.has(suitableRole.id)) {
-                    await member.roles.add(suitableRole.id).catch(() => { });
+                    await member.roles.add(suitableRole.id).catch(() => { }).finally(() => {
+                        usersDB[userId].role = suitableRole.id;
+                    });
                     return `✅ ${member.displayName} — назначена роль ${suitableRole.name}`;
                 } else {
+                    usersDB[userId].role = suitableRole.id;
                     return `✔️ ${member.displayName} — роль ${suitableRole.name} уже назначена`;
                 }
             }));
@@ -80,6 +83,9 @@ export const scanCommand = async (interaction: any) => {
             for (let i = 1; i < messages.length; i++) {
                 await interaction.followUp({ content: messages[i], ephemeral: true });
             }
+
+            // После всех изменений — сохранить usersDB
+            fs.writeFileSync(usersPath, JSON.stringify(usersDB, null, 2), 'utf-8');
         } catch (e) {
             console.error('Scan command error:', e);
             if (e instanceof DiscordAPIError) {

@@ -143,8 +143,7 @@ export async function waitForNextStep(
                 await discordRole.edit({
                     name: session.currentRole.name,
                     color: session.currentRole.color,
-                    permissions: session.currentRole.permissions,
-                    hoist: true
+                    permissions: session.currentRole.permissions
                 });
             }
             // Обновить только requiredReputation в roles.json

@@ -4,8 +4,10 @@ import { getUsersDB } from '@shared/utils/dbAccess.js';
 import { getDBFile } from '@shared/utils/paths.js';
 import { TRACKED_EMOJI } from '@events/reactions/constants/trackEmojiMap.js';
 import { getRecentReputationResponses } from '@shared/utils/getRecentReputationResponses.js';
-import { DMChannel, MessageReaction, User } from 'discord.js';
+import { DMChannel, MessageReaction, User, userMention } from 'discord.js';
 import { getEditMessage } from './model/utils/getEditMessage.js';
+import { MESSAGE_TYPES } from '../../shared/constants/messageTypes.js';
+import { addMessageType } from '../../shared/utils/messageTypeUtils.js';
 
 const usersFile = getDBFile();
 
@@ -46,26 +48,26 @@ export const onReputationChange = async (reaction: MessageReaction, user: User) 
 
     const [_, existReputationBotMessage] = lastReputationResponseCortage;
     const isOldMessage = reaction.message.id === existReputationBotMessage?.id;
-    const shouldEditExistingMessage = existReputationBotMessage && isOldMessage;
+    const shouldEditExistingMessage = existReputationBotMessage;
 
     const reactionAuthor = reaction.message.author;
 
     if (!reactionAuthor) return;
 
     const channel = (reaction.message.channel as DMChannel)
-
+    console.log('lastReputationResponseCortage', shouldEditExistingMessage, isOldMessage, lastReputationResponseCortage, existReputationBotMessage);
     switch (emoji) {
         case TRACKED_EMOJI.REGULAR.ARROW_DOUBLE_UP: {
 
-            if (reactionAuthor.username === user.username) {
-                channel.messages.fetch()
-                await channel.send('Kak tebe eto v golovu prishlo, ebanat))')
-                return;
-            }
-            if (userReactionCooldown.has(`${user.id}-up`)) {
-                return;
-            }
-            userReactionCooldown.set(`${user.id}-up`, true);
+            // if (reactionAuthor.username === user.username) {
+            //     channel.messages.fetch()
+            //     await channel.send('Kak tebe eto v golovu prishlo, ebanat))')
+            //     return;
+            // }
+            // if (userReactionCooldown.has(`${user.id}-up`)) {
+            //     return;
+            // }
+            // userReactionCooldown.set(`${user.id}-up`, true);
 
             db[reactionAuthor.id].reputationScore += 1;
             await writeDatabase(db);
@@ -73,39 +75,41 @@ export const onReputationChange = async (reaction: MessageReaction, user: User) 
                 if (ups.length && downs.length) {
                     await getEditMessage(existReputationBotMessage, reactionAuthor, ups, downs, db[reactionAuthor.id].reputationScore)
                 } else {
-                    await existReputationBotMessage.edit(
+                    const content =
                         `### 📊 Изменение репутации\n` +
-                        `**Пользователь:** ${reactionAuthor.username}\n` +
+                        `**Пользователь:** ${userMention(reactionAuthor.id)}\n` +
                         `**Действие:** Повышение репутации\n` +
                         `**От:** ${ups.join(', ')}\n` +
-                        `**Новый рейтинг:** ${db[reactionAuthor.id].reputationScore} ⭐`
-                    );
+                        `**Новый рейтинг:** ${db[reactionAuthor.id].reputationScore} ⭐`;
+
+                    await existReputationBotMessage.edit(addMessageType(content, MESSAGE_TYPES.REPUTATION_CHANGE));
                 }
             } else {
-                await channel.send(
+                const content =
                     `### 📊 Изменение репутации\n` +
-                    `**Пользователь:** ${reactionAuthor.username}\n` +
+                    `**Пользователь:** ${userMention(reactionAuthor.id)}\n` +
                     `**Действие:** Повышение репутации\n` +
                     `**От:** ${ups.join(', ')}\n` +
-                    `**Новый рейтинг:** ${db[reactionAuthor.id].reputationScore} ⭐`
-                );
+                    `**Новый рейтинг:** ${db[reactionAuthor.id].reputationScore} ⭐`;
+
+                await channel.send(addMessageType(content, MESSAGE_TYPES.REPUTATION_CHANGE));
             }
-            setTimeout(() => {
-                userReactionCooldown.delete(`${user.id}-up`)
-            }, 60 * 3 * 60 * 1000)
+            // setTimeout(() => {
+            //     userReactionCooldown.delete(`${user.id}-up`)
+            // }, 60 * 3 * 60 * 1000)
             break;
         }
         case TRACKED_EMOJI.REGULAR.ARROW_DOUBLE_DOWN: {
-            if (userReactionCooldown.has(`${user.id}-down`)) {
-                // delete reaction
-                return;
-            }
+            // if (userReactionCooldown.has(`${user.id}-down`)) {
+            //     // delete reaction
+            //     return;
+            // }
 
             if (reactionAuthor.username === user.username) {
                 await channel.send(`A вот это - прекрасная идея ${user.username}!`)
             }
 
-            userReactionCooldown.set(`${user.id}-down`, true);
+            // userReactionCooldown.set(`${user.id}-down`, true);
 
             db[reactionAuthor.id].reputationScore -= 1;
             await writeDatabase(db);
@@ -113,26 +117,28 @@ export const onReputationChange = async (reaction: MessageReaction, user: User) 
                 if (ups.length && downs.length) {
                     await getEditMessage(existReputationBotMessage, reactionAuthor, ups, downs, db[reactionAuthor.id].reputationScore)
                 } else {
-                    await existReputationBotMessage.edit(
+                    const content =
                         `### 📊 Изменение репутации\n` +
-                        `**Пользователь:** ${reactionAuthor.username}\n` +
+                        `**Пользователь:** ${userMention(reactionAuthor.id)}\n` +
                         `**Действие:** Понижение репутации\n` +
                         `**От:** ${downs.join(', ')}\n` +
-                        `**Новый рейтинг:** ${db[reactionAuthor.id].reputationScore} ⭐`
-                    );
+                        `**Новый рейтинг:** ${db[reactionAuthor.id].reputationScore} ⭐`;
+
+                    await existReputationBotMessage.edit(addMessageType(content, MESSAGE_TYPES.REPUTATION_CHANGE));
                 }
             } else {
-                await channel.send(
+                const content =
                     `### 📊 Изменение репутации\n` +
-                    `**Пользователь:** ${reactionAuthor.username}\n` +
+                    `**Пользователь:** ${userMention(reactionAuthor.id)}\n` +
                     `**Действие:** Понижение репутации\n` +
                     `**От:** ${downs.join(', ')}\n` +
-                    `**Новый рейтинг:** ${db[reactionAuthor.id].reputationScore} ⭐`
-                );
+                    `**Новый рейтинг:** ${db[reactionAuthor.id].reputationScore} ⭐`;
+
+                await channel.send(addMessageType(content, MESSAGE_TYPES.REPUTATION_CHANGE));
             }
-            setTimeout(() => {
-                userReactionCooldown.delete(`${user.id}-down`)
-            }, 60 * 3 * 60 * 1000)
+            // setTimeout(() => {
+            //     userReactionCooldown.delete(`${user.id}-down`)
+            // }, 60 * 3 * 60 * 1000)
             break;
         }
         default: break;

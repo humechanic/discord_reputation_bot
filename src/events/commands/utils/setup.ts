@@ -21,9 +21,6 @@ export async function waitForNextStep(
         }
         return;
     }
-    if (interaction.commandName) {
-        console.log(interaction.commandName);
-    }
 
     const step = session?.step;
     const filter = (m: any) => m.author.id === userId && m.channelId === session.channelId;

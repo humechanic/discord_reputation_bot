@@ -2,7 +2,8 @@ import { SlashCommandBuilder, PermissionFlagsBits, PermissionResolvable, ChatInp
 import { writeFile } from 'fs/promises';
 import path from 'path';
 import { waitForNextStep } from './utils/setup.js';
-import { readFileSync } from 'fs';
+
+import { getDBRoles } from '@shared/utils/roles/getDBRoles.js';
 
 export interface RoleConfig {
     name: string;
@@ -53,8 +54,7 @@ export async function setupCommand(interaction: ChatInputCommandInteraction) {
         // 2. If not found — search in roles.json
         if (!foundRole) {
             try {
-                const file = readFileSync(ROLES_PATH, 'utf-8');
-                const roles: RoleConfig[] = JSON.parse(file);
+                const roles = await getDBRoles();
                 foundRole = roles.find(r => r.name === editValue || r.id === editValue);
                 // If found — add to session for editing
                 if (foundRole) {

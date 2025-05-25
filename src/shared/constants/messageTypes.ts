@@ -8,5 +8,5 @@ export const MESSAGE_TYPES = {
 
 export type MessageType = typeof MESSAGE_TYPES[keyof typeof MESSAGE_TYPES];
 
-export const MESSAGE_TYPE_MARKER = '<!-- MESSAGE_TYPE:';
-export const MESSAGE_TYPE_MARKER_END = ' -->'; 
+export const MESSAGE_TYPE_MARKER = '-# || type:';
+export const MESSAGE_TYPE_MARKER_END = ' ||'; 

@@ -55,7 +55,7 @@ export const onReputationChange = async (reaction: MessageReaction, user: User) 
     if (!reactionAuthor) return;
 
     const channel = (reaction.message.channel as DMChannel)
-    console.log('lastReputationResponseCortage', shouldEditExistingMessage, isOldMessage, lastReputationResponseCortage, existReputationBotMessage);
+
     switch (emoji) {
         case TRACKED_EMOJI.REGULAR.ARROW_DOUBLE_UP: {
 

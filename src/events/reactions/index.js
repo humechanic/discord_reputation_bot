@@ -1,9 +1,9 @@
 import { Events } from "discord.js";
 import { discordClient } from "../../api/discordClient.js";
-import { autoResponse } from "./autoResponse.js";
+import { sendAutoResponse } from "./autoResponse.js";
 import { onReputationChange } from "@events/reputation/onReputationChange.js";
 
-export const reactionEvents = () => {
+export const initReactionEvents = async () => {
 
     discordClient.on(Events.MessageReactionAdd, async (reaction, user, details) => {
         if (user.bot) return;
@@ -18,7 +18,20 @@ export const reactionEvents = () => {
             }
         }
         const emoji = reaction.emoji.name;
-        onReputationChange(reaction, user)
-        autoResponse(reaction, emoji);
+        await onReputationChange(reaction, user)
+        await sendAutoResponse(reaction, emoji);
     });
+
+    discordClient.on(Events.MessageReactionRemove, async (reaction, user) => {
+        try {
+
+            if (reaction.partial) await reaction.fetch();
+
+            console.log(`${user.displayName} убрал реакцию ${reaction.emoji.name} c сообщения "${reaction.message.content}"`);
+
+
+        } catch (error) {
+            console.error('Не удалось обработать снятие реакции:', error);
+        }
+    })
 }

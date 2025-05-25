@@ -1,17 +1,16 @@
 import { Events } from 'discord.js';
 import { discordClient } from '../api/discordClient.js';
-import { reactionEvents } from './reactions/index.js';
-import { onJoinUsersEvents } from './voice/index';
+import { initReactionEvents } from './reactions/index.js';
+import { onJoinUsersEvents } from './voice/index.js';
+import { initCommands } from './commands/index.js';
 
-import { commands } from './commands/index.js';
-
-export const initEvents = () => {
+export const initEvents = async () => {
     discordClient
         .on(Events.ClientReady, () => {
             console.log(`Logged in as ${discordClient.user.tag}!`);
         });
 
-    commands();
-    reactionEvents();
-    onJoinUsersEvents();
+    await initCommands();
+    await initReactionEvents();
+    await onJoinUsersEvents();
 }

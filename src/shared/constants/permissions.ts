@@ -1,0 +1,22 @@
+export const PERMISSION_FLAGS: { flag: string; desc: string }[] = [
+    { flag: 'ViewChannel', desc: 'Просмотр каналов' },
+    { flag: 'SendMessages', desc: 'Отправка сообщений' },
+    { flag: 'ManageRoles', desc: 'Управление ролями' },
+    { flag: 'KickMembers', desc: 'Кикать участников' },
+    { flag: 'BanMembers', desc: 'Банить участников' },
+    { flag: 'Administrator', desc: 'Все права (админ)' },
+    { flag: 'ManageChannels', desc: 'Управление каналами' },
+    { flag: 'ManageGuild', desc: 'Управление сервером' },
+    { flag: 'EmbedLinks', desc: 'Встраивать ссылки' },
+    { flag: 'AttachFiles', desc: 'Прикреплять файлы' },
+    { flag: 'ReadMessageHistory', desc: 'Читать историю сообщений' },
+    { flag: 'MentionEveryone', desc: 'Упоминать всех' },
+    { flag: 'ManageMessages', desc: 'Управлять сообщениями' },
+    { flag: 'MuteMembers', desc: 'Мутить участников' },
+    { flag: 'DeafenMembers', desc: 'Отключать звук участникам' },
+    { flag: 'MoveMembers', desc: 'Перемещать участников' },
+    { flag: 'ManageNicknames', desc: 'Управлять никами' },
+    { flag: 'ManageWebhooks', desc: 'Управлять вебхуками' },
+    { flag: 'ManageEmojisAndStickers', desc: 'Управлять эмодзи и стикерами' },
+    //    ... and more
+] as const;

@@ -3,8 +3,8 @@ import fs from "fs";
 
 import { getDBFile } from "@shared/utils/paths.js";
 import { initUsers } from "./initUsers.js";
-import { getGuild } from "@api/users";
-import { getUsersDB } from "@shared/utils/dbAccess";
+import { getUsersDB } from "@shared/utils/dbAccess.js";
+import { getDBRoles } from "@shared/utils/roles/getDBRoles.js";
 
 function mergeDataWithFile(initUserDBData, usersFile) {
 
@@ -28,21 +28,21 @@ function mergeDataWithFile(initUserDBData, usersFile) {
 
 export const initUserDb = async () => {
     const users = await initUsers();
+    const dbRoles = await getDBRoles();
 
     const initUserDBData = Array.from(users.entries()).reduce((acc, [userId, userData]) => {
 
-        acc[userId] = { reputationScore: 0, role: '1203666181215748096', joinedAt: userData.joinedTimestamp, isBot: userData.user.bot };
+        acc[userId] = { reputationScore: 0, role: dbRoles[0] || '', joinedAt: userData.joinedTimestamp, isBot: userData.user.bot };
         return acc;
     }, {});
 
     const usersDBData = getUsersDB();
     const usersDBFile = getDBFile();
 
-    // if (!Object.keys(usersDBData).length) {
-
     mergeDataWithFile(initUserDBData, usersDBFile);
-    // }
+
 }
 // '1203665477260419112'- 'завсегдатай'
 // '1203665541168898049'- 'душа сообщества'
 // '1203666181215748096'- 'случайный'
+// "x" - moder

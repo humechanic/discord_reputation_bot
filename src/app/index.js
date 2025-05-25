@@ -1,18 +1,20 @@
-
 import { REST, Routes } from 'discord.js';
 import { InitBot } from './init/index.js';
 import { discordClient } from '../api/discordClient.js';
+import { rankCommandSettings } from '../events/commands/rank.js';
+import { initRolesSettings } from '../events/commands/initRoles.js';
+import { scanCommandSettings } from '../events/commands/scan.js';
+import { leaderboardCommandSettings } from '../events/commands/leaderboard.js';
+import { setupCommandSettings } from '../events/commands/setup.js';
+import { setRankScoreCommandSettings } from '../events/commands/setRankScore.js';
 
 const commands = [
-    {
-        name: 'ping',
-        description: 'Replies with Pong!',
-    },
-    {
-        name: 'scan',
-        description: 'Scan server for create a snapshot of current user database',
-    },
-
+    scanCommandSettings.toJSON(),
+    initRolesSettings.toJSON(),
+    rankCommandSettings.toJSON(),
+    leaderboardCommandSettings.toJSON(),
+    setupCommandSettings.toJSON(),
+    setRankScoreCommandSettings.toJSON(),
 ];
 
 export const initApp = async () => {
@@ -26,11 +28,9 @@ export const initApp = async () => {
     } catch (error) {
         console.error(error);
     } finally {
-
         discordClient.login(process.env.BOT_TOKEN);
-        InitBot();
+        await InitBot();
     }
-
 }
 
 
